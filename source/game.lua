@@ -62,7 +62,7 @@ function game.functions.startGame()
                 c.count = c.count + 1
                 if c.count <= 2 then
                     --print(c.color)
-                    game.functions.createButton(game.UI.offsetX + ((x - 1) * game.UI.nextCardX), game.UI.offsetY + ((y - 1) * game.UI.nextCardY), 48, 48, function (self) game.clickedCard = {x = self.data.posX, y = self.data.posY} end, c.color, {posX = x, posY = y})
+                    game.functions.createButton(game.UI.offsetX + ((x - 1) * game.UI.nextCardX), game.UI.offsetY + ((y - 1) * game.UI.nextCardY), 48, 48, function (self) game.clickedCard = {x = self.data.posX, y = self.data.posY} end, c.color, {posX = x, posY = y, state = "notFound"})
                     created = true
                 end
             end
@@ -94,7 +94,7 @@ function game.functions.render()
             xc = 1
         end
 
-        if game.clickedCard.x == xc and game.clickedCard.y == yc then
+        if value.data.state == "found" or game.clickedCard.x == xc and game.clickedCard.y == yc then
             love.graphics.draw(game.sprite.card_face_up, value.x - value.w * 0.2, value.y - value.h * 0.2, 0, 3.5, 3.5)
             love.graphics.draw(game.sprite[value.sprite], value.x, value.y , 0, 2.25, 2.25)
         else
