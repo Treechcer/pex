@@ -35,10 +35,10 @@ function love.mousepressed(x, y, button, istouch)
                 if card.x == -1 or card.y == -1 or game.clickedCard.x == -1 or game.clickedCard.y == -1 then
                     break
                 end
-                
-                if card.x ~= game.clickedCard.x and card.y ~= game.clickedCard.y then
+
+                if card.x ~= game.clickedCard.x or card.y ~= game.clickedCard.y then
                     for key_, value_ in pairs(game.hitBoxes) do
-                        if value.sprite == value_.sprite then
+                        if value_.data.posX == card.x and value_.data.posY == card.y and value.sprite == value_.sprite then
                             value_.data.state = "found"
                             value.data.state = "found"
                         end
