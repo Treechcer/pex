@@ -8,12 +8,14 @@ game = {
     functions = {},
     hitBoxes = {},
     clickedCard = {x = -1, y = -1},
+    lastClick = {x = -1, y = -1},
     UI = {
         offsetX = 200,
         nextCardX = 50,
         offsetY = 100,
         nextCardY = 50
-    }
+    },
+    clickCount = -1
 }
 
 game.sprite = {}
@@ -94,7 +96,7 @@ function game.functions.render()
             xc = 1
         end
 
-        if value.data.state == "found" or game.clickedCard.x == xc and game.clickedCard.y == yc then
+        if value.data.state == "found" or game.clickedCard.x == xc and game.clickedCard.y == yc or game.lastClick.x == xc and game.lastClick.y == yc then
             love.graphics.draw(game.sprite.card_face_up, value.x - value.w * 0.2, value.y - value.h * 0.2, 0, 3.5, 3.5)
             love.graphics.draw(game.sprite[value.sprite], value.x, value.y , 0, 2.25, 2.25)
         else

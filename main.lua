@@ -25,22 +25,29 @@ function love.mousepressed(x, y, button, istouch)
     if button == 1 then
         for key, value in pairs(game.hitBoxes) do
             if game.functions.AABB(x, y, 5, 5, value.x, value.y, value.w, value.h) then
-                local card = {x = game.clickedCard.x, y = game.clickedCard.y}
+                game.clickCount = game.clickCount + 1
+                if game.clickCount >= 2 then
+                    game.clickedCard.x = -1
+                    game.clickedCard.y = -1
+                    game.clickCount = 0
+                end
+                game.lastClick = {x = game.clickedCard.x, y = game.clickedCard.y}
 
                 --if game.hitBoxes[key].data.state == "found" then
                 --    break
                 --end
 
                 value.colFunc(game.hitBoxes[key])
-                if card.x == -1 or card.y == -1 or game.clickedCard.x == -1 or game.clickedCard.y == -1 then
+                if game.lastClick.x == -1 or game.lastClick.y == -1 or game.clickedCard.x == -1 or game.clickedCard.y == -1 then
                     break
                 end
 
-                if card.x ~= game.clickedCard.x or card.y ~= game.clickedCard.y then
+                if game.lastClick.x ~= game.clickedCard.x or game.lastClick.y ~= game.clickedCard.y then
                     for key_, value_ in pairs(game.hitBoxes) do
-                        if value_.data.posX == card.x and value_.data.posY == card.y and value.sprite == value_.sprite then
+                        if value_.data.posX == game.lastClick.x and value_.data.posY == game.lastClick.y and value.sprite == value_.sprite then
                             value_.data.state = "found"
                             value.data.state = "found"
+                            break
                         end
                     end
                 end
