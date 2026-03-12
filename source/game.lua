@@ -15,8 +15,14 @@ game = {
         offsetY = 100,
         nextCardY = 50
     },
+    winCond = {
+        found = 0,
+        haveToFind = 16
+    },
     clickCount = -1
 }
+
+game.winCond.haveToFind = game.difficulty.x * game.difficulty.y
 
 game.UI.offsetX = game.width / 2 - (game.UI.nextCardX * (game.difficulty.x / 2))
 game.UI.offsetY = game.height / 2 - (game.UI.nextCardY * (game.difficulty.y / 2))
@@ -100,15 +106,28 @@ function game.functions.render()
         end
 
         if value.data.state == "found" or game.clickedCard.x == xc and game.clickedCard.y == yc or game.lastClick.x == xc and game.lastClick.y == yc then
-            love.graphics.draw(game.sprite.card_face_up, value.x - value.w * 0.2, value.y - value.h * 0.2, 0, 3.5, 3.5)
-            love.graphics.draw(game.sprite[value.sprite], value.x, value.y , 0, 2.25, 2.25)
+            local cardSpr = game.sprite.card_face_up
+            local colorSpr = game.sprite[value.sprite]
+            local mov = 3
+            love.graphics.draw(cardSpr, value.x - mov, value.y - mov, 0, 3.5, 3.5)
+
+            local scale = 2
+            love.graphics.draw(colorSpr, value.x + (cardSpr:getWidth() * 3.5) / 2 - mov, value.y + (cardSpr:getHeight() * 3.5) / 2 - mov, 0, scale, scale, colorSpr:getWidth() / 2, colorSpr:getHeight() / 2)
         else
-            love.graphics.draw(game.sprite.card_face_down, value.x - value.w * 0.2, value.y - value.h * 0.2, 0, 3.5, 3.5)
+            local cardSpr = game.sprite.card_face_down
+           love.graphics.draw(cardSpr, value.x, value.y, 0, 3.5, 3.5)
         end
 
         xc = xc + 1
     end
     --print("---")
+end
+
+function game.functions.checkIfWin()
+    local winTab = game.winCond
+    if winTab.found >= winTab.haveToFind then
+        love.event.quit()
+    end
 end
 
 return game

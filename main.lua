@@ -47,6 +47,8 @@ function love.mousepressed(x, y, button, istouch)
                         if value_.data.posX == game.lastClick.x and value_.data.posY == game.lastClick.y and value.sprite == value_.sprite then
                             value_.data.state = "found"
                             value.data.state = "found"
+                            game.winCond.found = game.winCond.found + 2
+                            game.functions.checkIfWin()
                             break
                         end
                     end
