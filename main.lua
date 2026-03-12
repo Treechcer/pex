@@ -1,6 +1,8 @@
 love = require("love")
 
 function love.load()
+    love.window.setTitle("PEX")
+
     love.graphics.setDefaultFilter("nearest", "nearest")
     math.randomseed(os.time())
     game = require("source.game")
