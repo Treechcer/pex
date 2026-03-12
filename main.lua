@@ -18,17 +18,34 @@ function love.draw()
     love.graphics.rectangle("fill", love.mouse.getX(), love.mouse.getY(), 10, 10)
     love.graphics.setColor(1,1,1)
 
-    love.graphics.print("You have cliked: " .. tostring(math.floor(game.winCond.clicks)) .. " times", 0,0)
+    love.graphics.printf("You have clicked: " .. tostring(math.floor(game.winCond.clicks)) .. " times\n" ..
+    "You have played for " .. tostring(math.floor(game.winCond.time * 10) / 10) .. " seconds", game.height / 2, 25, 200, "center")
+
+    if game.winCond.won then
+        game.functions.endScreen()
+    end
 end
 
 function love.update(dt)
-    
+    if not game.winCond.won then
+        game.winCond.time = game.winCond.time + dt 
+    end
 end
 
 function love.mousepressed(x, y, button, istouch)
     if button == 1 then
         for key, value in pairs(game.hitBoxes) do
             if game.functions.AABB(x, y, 5, 5, value.x, value.y, value.w, value.h) then
+                print(value.data.state)
+                if value.data.state == "button_end" then
+                    value.colFunc()
+                    return
+                end
+
+                if game.winCond.won then
+                    goto continue
+                end
+
                 game.clickCount = game.clickCount + 1
                 game.winCond.clicks = game.winCond.clicks + 0.5
                 if game.clickCount >= 2 then
@@ -61,6 +78,33 @@ function love.mousepressed(x, y, button, istouch)
 
                 break
             end
+
+            ::continue::
         end
     end
+end
+
+function love.keypressed(k)
+
+    if k == "r" then
+        game.winCond.won = true
+        game.functions.createButton(game.width / 2 - 125, game.height / 4 - 50, 48, 48, game.functions.restartGame, "card_face_down", {state = "button_end"})
+        return
+    end
+
+    if not game.winCond.won then
+        return
+    end
+
+    k = (k == "space") and " " or k
+
+    if k:len() == 1 then
+        game.name = game.name .. k
+    elseif k == "backspace" and game.name:len() >= 1 then
+        game.name = game.name:sub(1, game.name:len() - 1)
+    elseif k == "return" then
+        game.functions.restartGame()
+    end
+
+    print(game.name)
 end

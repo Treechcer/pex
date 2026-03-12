@@ -18,9 +18,12 @@ game = {
     winCond = {
         found = 0,
         haveToFind = 16,
-        clicks = 0
+        clicks = 0,
+        time = 0,
+        won = false
     },
-    clickCount = -1
+    clickCount = -1,
+    name = "PEX"
 }
 
 game.winCond.haveToFind = game.difficulty.x * game.difficulty.y
@@ -38,6 +41,8 @@ game.sprite.card_face_down = love.graphics.newImage("assets/" .. "card_face_down
 game.sprite.card_face_up = love.graphics.newImage("assets/" .. "card_face_up" .. ".png")
 
 function game.functions.createButton(X, Y, W, H, Function, sprite, data)
+    num = num or 0
+    num = num + 1
     local t = {x = X, y = Y, w = W, h = H, colFunc = Function, sprite = sprite}
     if data ~= nil then
         t.data = data
@@ -115,8 +120,13 @@ function game.functions.render()
             local scale = 2
             love.graphics.draw(colorSpr, value.x + (cardSpr:getWidth() * 3.5) / 2 - mov, value.y + (cardSpr:getHeight() * 3.5) / 2 - mov, 0, scale, scale, colorSpr:getWidth() / 2, colorSpr:getHeight() / 2)
         else
-            local cardSpr = game.sprite.card_face_down
-           love.graphics.draw(cardSpr, value.x, value.y, 0, 3.5, 3.5)
+            if value.data.state == "button_end" then
+                local cardSpr = game.sprite.card_face_down -- change this to button later
+                love.graphics.draw(cardSpr, value.x, value.y, 0, value.w / cardSpr:getWidth(), value.h / cardSpr:getHeight())
+            else
+                local cardSpr = game.sprite.card_face_down
+                love.graphics.draw(cardSpr, value.x, value.y, 0, 3.5, 3.5)
+            end
         end
 
         xc = xc + 1
@@ -124,10 +134,41 @@ function game.functions.render()
     --print("---")
 end
 
+function game.functions.restartGame()
+    game.winCond = {
+        found = 0,
+        haveToFind = 16,
+        clicks = 0,
+        time = 0,
+        won = false
+    }
+
+    game.clickedCard = {x = -1, y = -1}
+    game.lastClick = {x = -1, y = -1}
+    game.clickCount = -1
+
+    game.name = "PEX"
+    game.hitBoxes = {}
+    game.functions.startGame()
+end
+
+function game.functions.endScreen()
+    local font = love.graphics.getFont()
+    local msg = "What's your name?"
+    love.graphics.printf(msg, game.width / 2 - 125, game.height / 4 - (25), 250, "center")
+    love.graphics.rectangle("fill", game.width / 2 - 125, game.height / 4 - (25/4), 250, 25)
+
+    love.graphics.setColor(0,0,0)
+    love.graphics.printf(game.name, game.width / 2 - 125, game.height / 4 - (25/4) + 5, 250, "left")
+    love.graphics.setColor(1,1,1)
+end
+
 function game.functions.checkIfWin()
     local winTab = game.winCond
     if winTab.found >= winTab.haveToFind then
-        love.event.quit()
+        winTab.won = true
+        game.functions.createButton(game.width / 2 - 125, game.height / 4 - 50, 3, 3, game.functions.restartGame, "card_face_down", {state = "button_end"})
+        game.functions.endScreen()
     end
 end
 
