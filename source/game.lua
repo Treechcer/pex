@@ -25,19 +25,29 @@ game = {
     clickCount = -1,
     name = "PEX",
     highscores = {
-        {name = "pepaZDepa", clicks = 67, time = 6.7}
+        --{name = "pepaZDepa", clicks = 67, time = 6.7}
         --{name = string, clicks = int, time = float}
     }
 }
 
-function game.functions.tableToStr(table)
-    str = "{"
+function game.functions.tableToStr(tbl)
+    local str = "{\n"
 
-    for key, value in pairs(table) do
-        if type(value) ~= "table" and type(value) ~= "userdata" then
-            str = str .. "{" .. tostring(key) .. "=" .. tostring(value) .. "},\n"
-        elseif type(value) == "table" then
-            str = str .. game.functions.tableToStr(value) .. ","
+    for key, value in pairs(tbl) do
+        local keyStr
+
+        if type(key) == "number" then
+            keyStr = "[" .. key .. "]"
+        else
+            keyStr = "[\"" .. key .. "\"]"
+        end
+
+        if type(value) == "table" then
+            str = str .. keyStr .. " = " .. game.functions.tableToStr(value) .. ",\n"
+        elseif type(value) == "string" then
+            str = str .. keyStr .. " = \"" .. value .. "\",\n"
+        else
+            str = str .. keyStr .. " = " .. tostring(value) .. ",\n"
         end
     end
 
@@ -200,7 +210,14 @@ function game.functions.checkIfWin()
 end
 
 function game.functions.createSave()
-    return love.filesystem.newFile("save.lua")
+    save = love.filesystem.newFile("save.lua")
+    if save ~= nil then
+        save:open("w")
+        save:close()
+        return save
+    end
+
+    return nil
 end
 
 function game.functions.save()
@@ -210,20 +227,25 @@ function game.functions.save()
     save:open("w")
     save:write("a = " .. tostring(hs) .. "\nreturn a")
     save:close()
-    local a = love.filesystem.load("save.lua")
-
-    metatable = {
-        __tostring = function (self)
-            return game.functions.tableToStr(self)
-        end
-    }
-
-    game.highscores = a()
-    setmetatable(game.highscores, metatable)
 end
 
 function game.functions.load()
-    
+    local a = love.filesystem.load("save.lua")
+
+    if a ~= nil then
+        metatable = {
+            __tostring = function (self)
+                return game.functions.tableToStr(self)
+            end
+        }
+        local temp = a()
+        if temp ~= nil then
+            game.highscores = a()
+            setmetatable(game.highscores, metatable)
+        end
+    end
+
+    return game.highscores
 end
 
 return game

@@ -7,8 +7,9 @@ function love.load()
     math.randomseed(os.time())
     game = require("source.game")
     backgroud = require("source.backgroud")
-    
+
     love.graphics.setBackgroundColor(1,1,1)
+    game.functions.createSave()
     game.functions.startGame()
 end
 
@@ -28,7 +29,9 @@ function love.draw()
 end
 
 function love.update(dt)
+    game.functions.load()
     --game.functions.save()
+    --game.functions.load()
     backgroud.functions.move(dt)
     if not game.winCond.won then
         game.winCond.time = game.winCond.time + dt 
@@ -106,6 +109,8 @@ function love.keypressed(k)
     elseif k == "backspace" and game.name:len() >= 1 then
         game.name = game.name:sub(1, game.name:len() - 1)
     elseif k == "return" then
+        table.insert(game.highscores, {name = game.name, time = game.winCond.time, click = game.clickCount})
+        game.functions.save()
         game.functions.restartGame()
     end
 
