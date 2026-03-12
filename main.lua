@@ -18,7 +18,7 @@ function love.draw()
     backgroud.functions.render()
     game.functions.render()
     love.graphics.setColor(1,0,0)
-    love.graphics.rectangle("fill", love.mouse.getX(), love.mouse.getY(), 10, 10)
+    --love.graphics.rectangle("fill", love.mouse.getX(), love.mouse.getY(), 10, 10)
     love.graphics.setColor(0,0,0)
 
     love.graphics.printf("You have clicked: " .. tostring(math.floor(game.winCond.clicks)) .. " times\n" ..
