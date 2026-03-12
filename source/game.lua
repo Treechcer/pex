@@ -23,8 +23,35 @@ game = {
         won = false
     },
     clickCount = -1,
-    name = "PEX"
+    name = "PEX",
+    highscores = {
+        {name = "pepaZDepa", clicks = 67, time = 6.7}
+        --{name = string, clicks = int, time = float}
+    }
 }
+
+function game.functions.tableToStr(table)
+    str = "{"
+
+    for key, value in pairs(table) do
+        if type(value) ~= "table" and type(value) ~= "userdata" then
+            str = str .. "{" .. tostring(key) .. "=" .. tostring(value) .. "},\n"
+        elseif type(value) == "table" then
+            str = str .. game.functions.tableToStr(value) .. ","
+        end
+    end
+
+    return str .. "}"
+end
+
+local metatable = {
+    __tostring = function (self)
+        return game.functions.tableToStr(self)
+    end
+}
+
+setmetatable(game.highscores, metatable)
+setmetatable(game.hitBoxes, metatable)
 
 game.winCond.haveToFind = game.difficulty.x * game.difficulty.y
 
@@ -170,6 +197,33 @@ function game.functions.checkIfWin()
         game.functions.createButton(game.width / 2 - 125, game.height / 4 - 50, 48, 48, game.functions.restartGame, "card_face_down", {state = "button_end"})
         game.functions.endScreen()
     end
+end
+
+function game.functions.createSave()
+    return love.filesystem.newFile("save.lua")
+end
+
+function game.functions.save()
+    local hs = tostring(game.highscores)
+    print(hs)
+    save = game.functions.createSave()
+    save:open("w")
+    save:write("a = " .. tostring(hs) .. "\nreturn a")
+    save:close()
+    local a = love.filesystem.load("save.lua")
+
+    metatable = {
+        __tostring = function (self)
+            return game.functions.tableToStr(self)
+        end
+    }
+
+    game.highscores = a()
+    setmetatable(game.highscores, metatable)
+end
+
+function game.functions.load()
+    
 end
 
 return game

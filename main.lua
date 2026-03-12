@@ -28,6 +28,7 @@ function love.draw()
 end
 
 function love.update(dt)
+    --game.functions.save()
     backgroud.functions.move(dt)
     if not game.winCond.won then
         game.winCond.time = game.winCond.time + dt 
