@@ -18,6 +18,9 @@ game = {
     clickCount = -1
 }
 
+game.UI.offsetX = game.width / 2 - (game.UI.nextCardX * (game.difficulty.x / 2))
+game.UI.offsetY = game.height / 2 - (game.UI.nextCardY * (game.difficulty.y / 2))
+
 game.sprite = {}
 
 for key, value in pairs(game.possibleColors) do
