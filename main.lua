@@ -6,27 +6,29 @@ function love.load()
     love.graphics.setDefaultFilter("nearest", "nearest")
     math.randomseed(os.time())
     game = require("source.game")
-
-    love.graphics.setBackgroundColor(0.5, 0.5, 0.5)
-
+    backgroud = require("source.backgroud")
+    
+    love.graphics.setBackgroundColor(1,1,1)
     game.functions.startGame()
 end
 
 function love.draw()
+    backgroud.functions.render()
     game.functions.render()
     love.graphics.setColor(1,0,0)
     love.graphics.rectangle("fill", love.mouse.getX(), love.mouse.getY(), 10, 10)
-    love.graphics.setColor(1,1,1)
+    love.graphics.setColor(0,0,0)
 
     love.graphics.printf("You have clicked: " .. tostring(math.floor(game.winCond.clicks)) .. " times\n" ..
     "You have played for " .. tostring(math.floor(game.winCond.time * 10) / 10) .. " seconds", game.height / 2, 25, 200, "center")
-
+    love.graphics.setColor(1,1,1)
     if game.winCond.won then
         game.functions.endScreen()
     end
 end
 
 function love.update(dt)
+    backgroud.functions.move(dt)
     if not game.winCond.won then
         game.winCond.time = game.winCond.time + dt 
     end
@@ -36,7 +38,7 @@ function love.mousepressed(x, y, button, istouch)
     if button == 1 then
         for key, value in pairs(game.hitBoxes) do
             if game.functions.AABB(x, y, 5, 5, value.x, value.y, value.w, value.h) then
-                print(value.data.state)
+                --print(value.data.state)
                 if value.data.state == "button_end" then
                     value.colFunc()
                     return
@@ -106,5 +108,5 @@ function love.keypressed(k)
         game.functions.restartGame()
     end
 
-    print(game.name)
+    --print(game.name)
 end

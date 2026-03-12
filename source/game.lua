@@ -167,7 +167,7 @@ function game.functions.checkIfWin()
     local winTab = game.winCond
     if winTab.found >= winTab.haveToFind then
         winTab.won = true
-        game.functions.createButton(game.width / 2 - 125, game.height / 4 - 50, 3, 3, game.functions.restartGame, "card_face_down", {state = "button_end"})
+        game.functions.createButton(game.width / 2 - 125, game.height / 4 - 50, 48, 48, game.functions.restartGame, "card_face_down", {state = "button_end"})
         game.functions.endScreen()
     end
 end
