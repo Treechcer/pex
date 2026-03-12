@@ -76,6 +76,7 @@ end
 
 game.sprite.card_face_down = love.graphics.newImage("assets/" .. "card_face_down" .. ".png")
 game.sprite.card_face_up = love.graphics.newImage("assets/" .. "card_face_up" .. ".png")
+game.sprite.long_button = love.graphics.newImage("assets/" .. "long_button" .. ".png")
 
 function game.functions.createButton(X, Y, W, H, Function, sprite, data)
     num = num or 0
@@ -158,7 +159,7 @@ function game.functions.render()
             love.graphics.draw(colorSpr, value.x + (cardSpr:getWidth() * 3.5) / 2 - mov, value.y + (cardSpr:getHeight() * 3.5) / 2 - mov, 0, scale, scale, colorSpr:getWidth() / 2, colorSpr:getHeight() / 2)
         else
             if value.data.state == "button_end" then
-                local cardSpr = game.sprite.card_face_down -- change this to button later
+                local cardSpr = game.sprite[value.sprite]
                 love.graphics.draw(cardSpr, value.x, value.y, 0, value.w / cardSpr:getWidth(), value.h / cardSpr:getHeight())
             else
                 local cardSpr = game.sprite.card_face_down
@@ -192,11 +193,29 @@ end
 function game.functions.endScreen()
     local font = love.graphics.getFont()
     local msg = "What's your name?"
+    love.graphics.setColor(0,0,0)
     love.graphics.printf(msg, game.width / 2 - 125, game.height / 4 - (25), 250, "center")
+    love.graphics.setColor(.7,.7,.7)
     love.graphics.rectangle("fill", game.width / 2 - 125, game.height / 4 - (25/4), 250, 25)
 
     love.graphics.setColor(0,0,0)
     love.graphics.printf(game.name, game.width / 2 - 125, game.height / 4 - (25/4) + 5, 250, "left")
+    love.graphics.printf("Done", game.width / 2 - 125, game.height / 4 + 32, 250, "center")
+    love.graphics.setColor(1,1,1)
+
+    table.sort(game.highscores, function (a, b)
+        return a.click < b.click
+    end)
+
+    local str = "Local Leaderboards:\n"
+    for index, value in ipairs(game.highscores) do
+        if index > 3 then
+            break
+        end
+        str = str .. index .. ": " .. value.name .. " in " .. value.click .. " clicks\n"
+    end
+    love.graphics.setColor(0,0,0)
+    love.graphics.print(str, 0, 0)
     love.graphics.setColor(1,1,1)
 end
 
@@ -222,7 +241,6 @@ end
 
 function game.functions.save()
     local hs = tostring(game.highscores)
-    print(hs)
     save = game.functions.createSave()
     save:open("w")
     save:write("a = " .. tostring(hs) .. "\nreturn a")

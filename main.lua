@@ -44,7 +44,9 @@ function love.mousepressed(x, y, button, istouch)
             if game.functions.AABB(x, y, 5, 5, value.x, value.y, value.w, value.h) then
                 --print(value.data.state)
                 if value.data.state == "button_end" then
-                    value.colFunc()
+                        table.insert(game.highscores, {name = game.name, time = game.winCond.time, click = math.floor(game.winCond.clicks)})
+                        game.functions.save()
+                        game.functions.restartGame()
                     return
                 end
 
@@ -94,7 +96,7 @@ function love.keypressed(k)
 
     if k == "r" then
         game.winCond.won = true
-        game.functions.createButton(game.width / 2 - 125, game.height / 4 - 50, 48, 48, game.functions.restartGame, "card_face_down", {state = "button_end"})
+        game.functions.createButton(game.width / 2 - 125, game.height / 4 + 25, 250, 32, game.functions.restartGame, "long_button", {state = "button_end"})
         return
     end
 
@@ -108,10 +110,10 @@ function love.keypressed(k)
         game.name = game.name .. k
     elseif k == "backspace" and game.name:len() >= 1 then
         game.name = game.name:sub(1, game.name:len() - 1)
-    elseif k == "return" then
-        table.insert(game.highscores, {name = game.name, time = game.winCond.time, click = game.clickCount})
-        game.functions.save()
-        game.functions.restartGame()
+    --elseif k == "return" then
+    --    table.insert(game.highscores, {name = game.name, time = game.winCond.time, click = math.floor(game.winCond.clicks)})
+    --    game.functions.save()
+    --    game.functions.restartGame()
     end
 
     --print(game.name)
