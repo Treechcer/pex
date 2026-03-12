@@ -17,7 +17,8 @@ game = {
     },
     winCond = {
         found = 0,
-        haveToFind = 16
+        haveToFind = 16,
+        clicks = 0
     },
     clickCount = -1
 }

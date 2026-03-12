@@ -15,6 +15,8 @@ function love.draw()
     love.graphics.setColor(1,0,0)
     love.graphics.rectangle("fill", love.mouse.getX(), love.mouse.getY(), 10, 10)
     love.graphics.setColor(1,1,1)
+
+    love.graphics.print("You have cliked: " .. tostring(math.floor(game.winCond.clicks)) .. " times", 0,0)
 end
 
 function love.update(dt)
@@ -26,6 +28,7 @@ function love.mousepressed(x, y, button, istouch)
         for key, value in pairs(game.hitBoxes) do
             if game.functions.AABB(x, y, 5, 5, value.x, value.y, value.w, value.h) then
                 game.clickCount = game.clickCount + 1
+                game.winCond.clicks = game.winCond.clicks + 0.5
                 if game.clickCount >= 2 then
                     game.clickedCard.x = -1
                     game.clickedCard.y = -1
