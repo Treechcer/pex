@@ -92,11 +92,11 @@ end
 
 function love.keypressed(k)
 
-    if k == "r" then
-        game.winCond.won = true
-        game.functions.createButton(game.width / 2 - 125, game.height / 4 + 25, 250, 32, game.functions.restartGame, "long_button", {state = "button_end"})
-        return
-    end
+    --if k == "r" then
+    --    game.winCond.won = true
+    --    game.functions.createButton(game.width / 2 - 125, game.height / 4 + 25, 250, 32, game.functions.restartGame, "long_button", {state = "button_end"})
+    --    return
+    --end
 
     if not game.winCond.won then
         return
@@ -108,10 +108,10 @@ function love.keypressed(k)
         game.name = game.name .. k
     elseif k == "backspace" and game.name:len() >= 1 then
         game.name = game.name:sub(1, game.name:len() - 1)
-    --elseif k == "return" then
-    --    table.insert(game.highscores, {name = game.name, time = game.winCond.time, click = math.floor(game.winCond.clicks)})
-    --    game.functions.save()
-    --    game.functions.restartGame()
+    elseif k == "return" then
+        table.insert(game.highscores, {name = game.name, time = game.winCond.time, click = math.floor(game.winCond.clicks)})
+        game.functions.save()
+        game.functions.restartGame()
     end
 
     --print(game.name)
